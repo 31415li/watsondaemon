@@ -1,0 +1,6 @@
+config section 'global'
+    option enable  1
+    option orgId    'gut697'
+    option typeId   'RUTX10'
+    option deviceId 'RUTX10-BB'
+    option token    '2sHrUjLzebsI8A3(bz'

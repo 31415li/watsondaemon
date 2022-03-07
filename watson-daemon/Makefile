@@ -9,7 +9,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/watson-daemon
 	CATEGORY:=Base system
 	TITLE:=watson-daemon
-	DEPENDS:=+libibm-iotp
+	DEPENDS:=+libuci +libibm-iotp
 endef
 
 define Package/watson-daemon/description
@@ -20,7 +20,7 @@ define Package/watson-daemon/install
 	$(INSTALL_DIR) $(1)/usr/bin $(1)/etc/init.d $(1)/etc/config
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/watson-daemon $(1)/usr/bin/
 	$(INSTALL_BIN) ./files/watson-daemon.init $(1)/etc/init.d
-	$(INSTALL_CONF) ./files/watson-daemon.yaml $(1)/etc/config/
+	$(INSTALL_CONF) ./files/config $(1)/etc/config/watson-daemon
 endef
 
 $(eval $(call BuildPackage,watson-daemon))
