@@ -21,14 +21,16 @@ endef
 
 define Build/InstallDev
 	$(INSTALL_DIR)  $(1)/usr/lib $(1)/usr/include
-	$(INSTALL_BIN)  $(wildcard $(PKG_BUILD_DIR)/build/lib*) $(1)/usr/lib
-	$(INSTALL_DATA) $(wildcard $(PKG_BUILD_DIR)/src/wiotp/sdk/*.h) $(1)/usr/include
+	$(INSTALL_BIN)  $(PKG_BUILD_DIR)/build/lib* $(1)/usr/lib
+	$(INSTALL_BIN)  $(PKG_BUILD_DIR)/paho.mqtt.c/build/output/libpaho-mqtt3as.so* $(1)/usr/lib
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/src/wiotp/sdk/*.h $(1)/usr/include
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/paho.mqtt.c/src/*.h $(1)/usr/include
 endef
 
 define Package/libibm-iotp/install
 	$(INSTALL_DIR) $(1)/usr/lib
-	$(INSTALL_BIN) $(wildcard $(PKG_BUILD_DIR)/build/lib*) $(1)/usr/lib
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/paho.mqtt.c/build/output/libpaho-mqtt3as.so.1 $(1)/usr/lib
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/build/lib* $(1)/usr/lib
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/paho.mqtt.c/build/output/libpaho-mqtt3as.so* $(1)/usr/lib
 endef
 
 $(eval $(call BuildPackage,libibm-iotp))
