@@ -18,7 +18,7 @@ int main(void) {
     // MQTTProperties_add(properties, &property);
 
     char *data = "{\"d\" : {\"SensorID\": \"Test\", \"Reading\": 7 }}";
-    IOTPRC err = IoTPDevice_sendEvent(device, "status", data, "json", QoS0, NULL);
+    IOTPRC err = IoTPDevice_sendEvent(device, "status", data, "json", QoS1, NULL);
     printf("%d\n", err);
 
     IoTPDevice_disconnect(device);
