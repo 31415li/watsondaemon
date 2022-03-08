@@ -9,7 +9,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/watson-daemon
 	CATEGORY:=Base system
 	TITLE:=watson-daemon
-	DEPENDS:=+libuci +libibm-iotp
+	DEPENDS:=+libuci +libibm-iotp +libubus +libubox +libblobmsg-json
 endef
 
 define Package/watson-daemon/description

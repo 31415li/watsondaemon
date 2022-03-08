@@ -1,4 +1,4 @@
-LDFLAGS:=-luci -liotp-as-device -lpaho-mqtt3as
+LDFLAGS:=-luci -liotp-as-device -lpaho-mqtt3as -lblobmsg_json -lubox -lubus
 BIN:=watson-daemon
 
 .PHONY: all
