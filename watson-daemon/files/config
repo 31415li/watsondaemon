@@ -1,4 +1,4 @@
-config section 'global'
+config section 'config'
     option enable  1
     option orgId    'gut697'
     option typeId   'RUTX10'

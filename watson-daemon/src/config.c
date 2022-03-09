@@ -33,7 +33,7 @@ static int tranfer_config_fields(struct uci_context *context, struct uci_section
 
 IoTPConfig *load_iotp_config(void) {
     const char *const config_name = "watson-daemon";
-    const char *const section_name = "global";
+    const char *const section_name = "config";
     struct uci_context *context;
     struct uci_package *package;
     struct uci_section *section;
