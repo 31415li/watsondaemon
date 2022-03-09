@@ -20,3 +20,9 @@ upload-iotp: build-iotp
 
 upload-daemon: build-daemon
 	scp -r $(DAEMON_ROOT_DIR)/usr $(DAEMON_ROOT_DIR)/etc root@192.168.1.1:/
+
+clean-iotp:
+	make -C $(RUTOS_ROOT_DIR) package/libibm-iotp/clean
+
+clean-daemon:
+	make -C $(RUTOS_ROOT_DIR) package/watson-daemon/clean
