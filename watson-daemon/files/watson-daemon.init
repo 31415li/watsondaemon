@@ -12,8 +12,8 @@ start_service() {
         procd_set_param command /usr/bin/watson-daemon
         procd_set_param pidfile /var/run/watson-daemon.pid
         procd_set_param file    /etc/config/watson-daemon
-        procd_set_param stdout 1
-        procd_set_param stderr 1
+        procd_set_param stdout 0
+        procd_set_param stderr 0
         procd_close_instance
     fi
 }

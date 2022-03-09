@@ -1,14 +1,31 @@
 #include <syslog.h>
+#include <stdlib.h>
+#include <signal.h>
+#include <unistd.h>
 #include "config.h"
 #include "device.h"
 #include "system.h"
 
-int main(int argc, char** argv) {
+volatile sig_atomic_t terminated = 0;
+
+void sigterm_handler() {
+    terminated = 1;
+}
+
+void init_sighandler() {
+    struct sigaction act;
+    act.sa_handler = sigterm_handler;
+    sigemptyset(&act.sa_mask);
+    sigaction(SIGTERM, &act, NULL);
+}
+
+int main(int argc, char** argv) {    
     IoTPConfig *config = NULL;
     IoTPDevice *device = NULL;
     struct ubus_context *ctx;
     int rc = EXIT_SUCCESS;
 
+    init_sighandler();
     openlog("watson-daemon", LOG_PID, LOG_DAEMON);
     syslog(LOG_INFO, "Starting watson-daemon");
 
@@ -31,7 +48,7 @@ int main(int argc, char** argv) {
         goto err3;
     }
 
-    while (true) {
+    while (!terminated) {
         system_data data;
         fetch_system_data(ctx, &data);
 
