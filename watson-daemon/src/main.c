@@ -50,12 +50,17 @@ int main(int argc, char** argv) {
 
     while (!terminated) {
         system_data data;
+        IOTPRC err;
         fetch_system_data(ctx, &data);
 
         char buf[256];
         sprintf(buf, "{\"total\": %lld, \"free\": %lld }", data.total_memory, data.free_memory);
 
-        IOTPRC err = IoTPDevice_sendEvent(device, "status", buf, "json", QoS0, NULL);
+        err = IoTPDevice_sendEvent(device, "status", buf, "json", QoS0, NULL);
+        if (err) {
+            syslog(LOG_ERR, "Could not send data to server: %s",
+                   IOTPRC_toString(rc));
+        }
 
         sleep(2);
     }
