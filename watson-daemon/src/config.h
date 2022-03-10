@@ -2,9 +2,9 @@
 #define __CONFIG_H
 
 #include <iotp_device.h>
-#include <uci.h>
+#include "opts.h"
 
-IoTPConfig *load_iotp_config(void);
+IoTPConfig *load_iotp_config(cli_args *args);
 void clear_config(IoTPConfig *config);
 
 #endif

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <unistd.h>
+#include "opts.h"
 #include "config.h"
 #include "device.h"
 #include "system.h"
@@ -13,13 +14,14 @@ void sigterm_handler() {
 }
 
 void init_sighandler() {
-    struct sigaction act;
-    act.sa_handler = sigterm_handler;
-    sigemptyset(&act.sa_mask);
-    sigaction(SIGTERM, &act, NULL);
+    struct sigaction action;
+    action.sa_handler = sigterm_handler;
+    sigemptyset(&action.sa_mask);
+    sigaction(SIGTERM, &action, NULL);
 }
 
-int main(int argc, char** argv) {    
+int main(int argc, const char** argv) {    
+    cli_args args;
     IoTPConfig *config = NULL;
     IoTPDevice *device = NULL;
     struct ubus_context *ctx;
@@ -27,9 +29,15 @@ int main(int argc, char** argv) {
 
     init_sighandler();
     openlog("watson-daemon", LOG_PID, LOG_DAEMON);
+    
+    if (parse_cli_args(argc, argv, &args)) {
+        rc = EXIT_FAILURE;
+        goto err1;
+    }
+    
     syslog(LOG_INFO, "Starting watson-daemon");
 
-    config = load_iotp_config();
+    config = load_iotp_config(&args);
     if (!config) {
         rc = EXIT_FAILURE;
         goto err1;

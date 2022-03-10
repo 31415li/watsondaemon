@@ -3,12 +3,12 @@
 #include <libubox/blobmsg_json.h>
 #include <syslog.h>
 
-static enum {
+enum {
     INFO_MEMORY,
     __INFO_MAX
 };
 
-static enum {
+enum {
     MEMORY_TOTAL,
     MEMORY_FREE,
     __MEMORY_MAX

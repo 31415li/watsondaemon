@@ -4,12 +4,27 @@ USE_PROCD=1
 
 start_service() {
     local enabled
+
+    local orgid
+    local typeid
+    local deviceid
+    local token
+
     config_load 'watson-daemon'
     config_get enabled config 'enable' '0'
 
     if [ "$enabled" -eq 1 ]; then
+        config_get orgid    config 'orgId'
+        config_get typeid   config 'typeId'
+        config_get deviceid config 'deviceId'
+        config_get token    config 'token'
+
         procd_open_instance
-        procd_set_param command /usr/bin/watson-daemon
+        procd_set_param command /usr/bin/watson-daemon \
+            --orgid=$orgid \
+            --typeid=$typeid \
+            --deviceid=$deviceid \
+            --token=$token
         procd_set_param pidfile /var/run/watson-daemon.pid
         procd_set_param file    /etc/config/watson-daemon
         procd_set_param stdout 0
