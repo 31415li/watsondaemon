@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <syslog.h>
 #include <unistd.h>
+#include <sys/file.h>
 
 #include "config.h"
 #include "device.h"
@@ -19,6 +20,26 @@ void init_sighandler() {
     sigaction(SIGTERM, &action, NULL);
 }
 
+int aquire_lockfile() {
+    const char * const lock_path = "/var/lock/watson-daemon.lock";
+    int fd;
+    int err;
+    
+    fd = open(lock_path, O_RDWR | O_CREAT, 0666);
+    if (fd == -1) {
+        syslog(LOG_CRIT, "Could not start service: error creating lock file");
+        return 1;
+    }
+    
+    err = flock(fd, LOCK_EX | LOCK_NB);
+    if (err) {
+        syslog(LOG_CRIT, "Could not start service: Another instance is already running");
+        return 1;
+    }
+    
+    return 0;
+}
+
 int main(int argc, const char **argv) {
     cli_args args;
     IoTPConfig *config = NULL;
@@ -26,8 +47,13 @@ int main(int argc, const char **argv) {
     struct ubus_context *ctx;
     int rc = EXIT_SUCCESS;
 
-    init_sighandler();
     openlog("watson-daemon", LOG_PID, LOG_DAEMON);
+    
+    if (aquire_lockfile()) {
+        goto err0;
+    }
+
+    init_sighandler();
 
     if (parse_cli_args(argc, argv, &args)) {
         rc = EXIT_FAILURE;
@@ -64,8 +90,9 @@ int main(int argc, const char **argv) {
         sprintf(buf, "{\"total\": %lld, \"free\": %lld }", data.total_memory,
                 data.free_memory);
 
+        syslog(LOG_DEBUG, "Sending message...");
         err = IoTPDevice_sendEvent(device, "status", buf, "json", QoS0, NULL);
-        if (err) {
+        if (err != IOTPRC_SUCCESS) {
             syslog(LOG_ERR, "Could not send data to server: %s",
                    IOTPRC_toString(rc));
         }
@@ -80,6 +107,7 @@ err2:
     clear_config(config);
 err1:
     syslog(LOG_INFO, "Stopping watson-daemon");
+err0:
     closelog();
     return rc;
 }

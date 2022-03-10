@@ -39,3 +39,6 @@ clean-daemon:
 
 clean-luci:
 	make -C $(RUTOS_ROOT_DIR) package/luci-app-watson-daemon/clean
+
+format-daemon:
+	clang-format -i --style="{BasedOnStyle: llvm, IndentWidth: 4}" watson-daemon/src/*
